@@ -23,6 +23,7 @@ Projeyi yerelde çalıştırmak oldukça basittir:
 2.Proje dizinine gidin:
   Bash
   cd qcard
+  
 3.index.html dosyasını tarayıcınızda açın veya bir yerel sunucu başlatın:
 
 Bash
