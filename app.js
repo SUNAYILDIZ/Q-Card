@@ -115,7 +115,9 @@ const buildVCard = (s) => {
   if (!hasAny) return null
 
   const nameParts = [firstName, lastName].filter(Boolean)
-  const fn = nameParts.join(' ').trim()
+  // FN, vCard 3.0'da zorunlu alan. Ad/soyad girilmemişse bile
+  // FN'nin bos kalmamasi icin elde bulunan diger bilgilerden birini kullan.
+  const fn = nameParts.join(' ').trim() || phone || email || company || title
 
   // VCard N: Family;Given;Additional;Prefix;Suffix
   const family = lastName
@@ -155,11 +157,13 @@ const downloadVcf = (vcard) => {
 
   const first = trimOrEmpty(state.firstName)
   const last = trimOrEmpty(state.lastName)
-  const baseName = `${first || last || 'kartvizit'}-${(last || first || '').trim()}`.replace(
-    /\s+/g,
-    '-'
-  )
-  const safeBase = baseName.replace(/[^a-zA-Z0-9-_]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '')
+  // Ad ve/veya soyaddan tekrarsiz bir dosya adi olustur
+  const baseName = [first, last].filter(Boolean).join('-').replace(/\s+/g, '-') || 'kartvizit'
+  // Turkce karakterleri silmek yerine koru, sadece guvensiz karakterleri temizle
+  const safeBase = baseName
+    .replace(/[^a-zA-Z0-9-_çÇğĞıİöÖşŞüÜ]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
 
   const filename = `${safeBase || 'kartvizit'}.vcf`
   const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' })
@@ -305,4 +309,3 @@ const wireEvents = () => {
 }
 
 wireEvents()
-
