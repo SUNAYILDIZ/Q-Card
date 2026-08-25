@@ -224,7 +224,8 @@ const renderQr = (vcard) => {
       height,
       correctLevel: QRCode.CorrectLevel.M
     })
-  } catch {
+  } catch (err) {
+    console.error('QR oluşturma hatası:', err)
     selectors.qrCode.textContent = ''
     selectors.statusText.textContent = 'QR oluşturulamadı.'
   }
